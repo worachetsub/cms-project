@@ -16,16 +16,16 @@ app.config.from_object(Config)
 ## Set the logging level
 app.logger.setLevel(logging.DEBUG)
 
-## Create a file handler that logs messages to a file
-handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
-handler.setLevel(logging.INFO)  # Set the level for the handler
+# ## Create a file handler that logs messages to a file
+# handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
+# handler.setLevel(logging.INFO)  # Set the level for the handler
 
-## Create a logging format
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
+# ## Create a logging format
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# handler.setFormatter(formatter)
 
-## Add the handler to the app's logger
-app.logger.addHandler(handler)
+# ## Add the handler to the app's logger
+# app.logger.addHandler(handler)
 
 Session(app)
 db = SQLAlchemy(app)
