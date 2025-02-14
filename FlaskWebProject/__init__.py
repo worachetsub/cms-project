@@ -14,7 +14,7 @@ app.config.from_object(Config)
 # TODO: Add any logging levels and handlers with app.logger
 
 ## Set the logging level
-app.logger.setLevel(logging.DEBUG)
+# app.logger.setLevel(logging.DEBUG)
 
 # ## Create a file handler that logs messages to a file
 # handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
