@@ -12,6 +12,9 @@ from flask_login import current_user, login_user, logout_user, login_required
 from FlaskWebProject.models import User, Post
 import msal
 import uuid
+import os
+import random
+import string
 
 imageSourceUrl = 'https://'+ app.config['BLOB_ACCOUNT']  + '.blob.core.windows.net/' + app.config['BLOB_CONTAINER']  + '/'
 
@@ -150,16 +153,19 @@ def _build_msal_app(cache=None, authority=None):
         token_cache=cache  # Optional: pass the cache if provided
     )
 
-def _build_auth_url(authority=None, scopes=None, state=None):
-     # TODO: Return the full Auth Request URL with appropriate Redirect URI
-    return None
+# def _build_auth_url(authority=None, scopes=None, state=None):
+#      # TODO: Return the full Auth Request URL with appropriate Redirect URI
+#     return None
 
-# def _build_auth_url(authority, scopes, state):
-#     base_url = f"{authority}/oauth2/v2.0/authorize"
-#     client_id = "c8b1eedf-fd46-4668-8222-4b97dd626d8a"  # Replace with your actual client ID
-#     redirect_uri = "https://udacitycms-wspo-bnf7hud0bjfzf3fz.eastus2-01.azurewebsites.net/getAToken"  # Replace with your redirect URI
+def _build_auth_url(authority, scopes):
+    base_url = f"{authority}/oauth2/v2.0/authorize"
+    client_id = os.getenv("CLIENT_ID")  # Use environment variable
+    redirect_uri = os.getenv("REDIRECT_URI")  # Use environment variable
 
-#     # Construct the full URL
-#     auth_url = f"{base_url}?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&scope={' '.join(scopes)}&state={state}"
+    # Generate a random state parameter
+    state = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+
+    # Construct the full URL
+    auth_url = f"{base_url}?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&scope={' '.join(scopes)}&state={state}"
     
-#     return auth_url
+    return auth_url
