@@ -110,19 +110,56 @@ def logout():
 
     return redirect(url_for('login'))
 
+# def _load_cache():
+#     # TODO: Load the cache from `msal`, if it exists
+#     cache = None
+#     return cache
+
 def _load_cache():
-    # TODO: Load the cache from `msal`, if it exists
-    cache = None
+    # Load the cache from msal, if it exists
+    cache = msal.SerializableTokenCache()  # Create a new cache instance
+    if os.path.exists("token_cache.json"):  # Check if the cache file exists
+        with open("token_cache.json", "r") as f:
+            cache.deserialize(f.read())  # Load the cache from the file
     return cache
 
+# def _save_cache(cache):
+#     # TODO: Save the cache, if it has changed
+#     pass
+
 def _save_cache(cache):
-    # TODO: Save the cache, if it has changed
-    pass
+    # Check if the cache has been modified
+    if cache.has_changed():  # This is a hypothetical method; implement your own logic
+        with open("token_cache.json", "w") as f:
+            f.write(cache.serialize())  # Save the cache to a file
+
+
+# def _build_msal_app(cache=None, authority=None):
+#     # TODO: Return a ConfidentialClientApplication
+#     return None
 
 def _build_msal_app(cache=None, authority=None):
-    # TODO: Return a ConfidentialClientApplication
-    return None
+    client_id = "c8b1eedf-fd46-4668-8222-4b97dd626d8a"  # Replace with your actual client ID
+    client_secret = "gLV8Q~tttnM5h-gWNE6NgqqCEQOltENr_hc2ncWe"  # Replace with your actual client secret
 
-def _build_auth_url(authority=None, scopes=None, state=None):
-    # TODO: Return the full Auth Request URL with appropriate Redirect URI
-    return None
+    # Create a ConfidentialClientApplication instance
+    return msal.ConfidentialClientApplication(
+        client_id,
+        authority=authority,
+        client_credential=client_secret,
+        token_cache=cache  # Optional: pass the cache if provided
+    )
+
+# def _build_auth_url(authority=None, scopes=None, state=None):
+#     # TODO: Return the full Auth Request URL with appropriate Redirect URI
+#     return None
+
+def _build_auth_url(authority, scopes, state):
+    base_url = f"{authority}/oauth2/v2.0/authorize"
+    client_id = "c8b1eedf-fd46-4668-8222-4b97dd626d8a"  # Replace with your actual client ID
+    redirect_uri = "https://udacitycms-wspo-bnf7hud0bjfzf3fz.eastus2-01.azurewebsites.net/getAToken"  # Replace with your redirect URI
+
+    # Construct the full URL
+    auth_url = f"{base_url}?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&scope={' '.join(scopes)}&state={state}"
+    
+    return auth_url
