@@ -27,9 +27,10 @@ class Config(object):
     # if not CLIENT_SECRET:
     #     raise ValueError("Need to define CLIENT_SECRET environment variable")
 
-    AUTHORITY = "https://login.microsoftonline.com/common"  # For multi-tenant app, else put tenant name
+    # AUTHORITY = "https://login.microsoftonline.com/common"  # For multi-tenant app, else put tenant name
     # AUTHORITY = "https://login.microsoftonline.com/Enter_the_Tenant_Name_Here"
-
+    AUTHORITY = "https://login.microsoftonline.com/3e0958b6-7c8d-4cfd-8e5e-d621c049f02d"
+    
     CLIENT_ID = "c8b1eedf-fd46-4668-8222-4b97dd626d8a"
 
     REDIRECT_PATH = "/getAToken"  # Used to form an absolute URL; must match to app's redirect_uri set in AAD
