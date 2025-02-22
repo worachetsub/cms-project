@@ -89,14 +89,12 @@ def authorized():
     if request.args.get('code'):
         cache = _load_cache()
         # TODO: Acquire a token from a built msal app, along with the appropriate redirect URI
-         #result = None
-        # Acquire a token using the authorization code   
-        result = msal_app.acquire_token_by_authorization_code(
-            request.args.get('code'),
-            scopes=["User.Read"],  # Specify the required scopes
-            redirect_uri=REDIRECT_URI
-        )
-                
+        #result = None  
+        result = _build_msal_app(cache=cache).acquire_token_by_authorization_code(
+        request.args['code'],
+        scopes=Config.SCOPE,
+        redirect_uri=url_for('authorized', _external=True, _scheme='https'))
+        
         if "error" in result:
             return render_template("auth_error.html", result=result)
         session["user"] = result.get("id_token_claims")
@@ -143,36 +141,18 @@ def _save_cache(cache):
         with open("token_cache.json", "w") as f:
             f.write(cache.serialize())  # Save the cache to a file
 
-
-# def _build_msal_app(cache=None, authority=None):
-#     # TODO: Return a ConfidentialClientApplication
-#     return None
-
 def _build_msal_app(cache=None, authority=None):
-    client_id = "c8b1eedf-fd46-4668-8222-4b97dd626d8a"  # Replace with your actual client ID
-    client_secret = "gLV8Q~tttnM5h-gWNE6NgqqCEQOltENr_hc2ncWe"  # Replace with your actual client secret
-
-    # Create a ConfidentialClientApplication instance
+    # TODO: Return a ConfidentialClientApplication
+    # return None
     return msal.ConfidentialClientApplication(
-        client_id,
-        authority=authority,
-        client_credential=client_secret,
-        token_cache=cache  # Optional: pass the cache if provided
-    )
+    Config.CLIENT_ID, authority=authority or Config.AUTHORITY,
+    client_credential=Config.CLIENT_SECRET, token_cache=cache)
 
 def _build_auth_url(authority=None, scopes=None, state=None):
-     # TODO: Return the full Auth Request URL with appropriate Redirect URI
-    return None
-
-# def _build_auth_url(authority, scopes):
-#     base_url = f"{authority}/oauth2/v2.0/authorize"
-#     client_id = os.getenv("CLIENT_ID")  # Use environment variable
-#     redirect_uri = os.getenv("REDIRECT_URI")  # Use environment variable
-
-#     # Generate a random state parameter
-#     state = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
-
-#     # Construct the full URL
-#     auth_url = f"{base_url}?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&scope={' '.join(scopes)}&state={state}"
+    # TODO: Return the full Auth Request URL with appropriate Redirect URI
+    # return None
+    return _build_msal_app(authority=authority).get_authorization_request_url(
+    scopes or [],
+    state=state or str(uuid.uuid4()),
+    redirect_uri=url_for('authorized', _external=True, _scheme='https'))
     
-#     return auth_url
