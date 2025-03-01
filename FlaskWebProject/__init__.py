@@ -11,26 +11,19 @@ from flask_session import Session
 
 app = Flask(__name__)
 app.config.from_object(Config)
-# TODO: Add any logging levels and handlers with app.logger
 
-## Set the logging level
-# app.logger.setLevel(logging.DEBUG)
+# Set the logging level
 app.logger.setLevel(logging.WARNING)
 
-# ## Create a file handler that logs messages to a file
-# handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
-# handler.setLevel(logging.INFO)  # Set the level for the handler
+# Create a file handler that logs messages to a file
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
-handler.setLevel(logging.WARNING)  # Set the level for the handler
+handler.setLevel(logging.WARNING)  
 
-# ## Create a logging format
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# handler.setFormatter(formatter)
+# Create a logging format
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
-# ## Add the handler to the app's logger
-# app.logger.addHandler(handler)
+# Add the handler to the app's logger
 app.logger.addHandler(handler)
 
 Session(app)
