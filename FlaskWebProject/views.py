@@ -125,10 +125,9 @@ def logout():
 
 def _load_cache():
     # Load the cache from msal, if it exists
-    cache = msal.SerializableTokenCache()  # Create a new cache instance
-    if os.path.exists("token_cache.json"):  # Check if the cache file exists
-        with open("token_cache.json", "r") as f:
-            cache.deserialize(f.read())  # Load the cache from the file
+    cache = msal.SerializableTokenCache()
+    if session.get('token_cache'):
+        cache.deserialize(session['token_cache'])
     return cache
 
 # def _save_cache(cache):
@@ -137,16 +136,15 @@ def _load_cache():
 
 def _save_cache(cache):
     # Check if the cache has been modified
-    if cache.has_changed():  # This is a hypothetical method; implement your own logic
-        with open("token_cache.json", "w") as f:
-            f.write(cache.serialize())  # Save the cache to a file
+    if cache.has_state_changed:
+        session['token_cache'] = cache.serialize()
 
 def _build_msal_app(cache=None, authority=None):
     # TODO: Return a ConfidentialClientApplication
     # return None
     return msal.ConfidentialClientApplication(
-    Config.CLIENT_ID, authority=authority or Config.AUTHORITY,
-    client_credential=Config.CLIENT_SECRET, token_cache=cache)
+     Config.CLIENT_ID, authority=authority or Config.AUTHORITY,
+     client_credential=Config.CLIENT_SECRET, token_cache=cache)
 
 def _build_auth_url(authority=None, scopes=None, state=None):
     # TODO: Return the full Auth Request URL with appropriate Redirect URI
